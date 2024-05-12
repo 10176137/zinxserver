@@ -1,15 +1,16 @@
 #include "Echo.h"
-#include "CmdMsg.h"
+#include "../UserData/CmdMsg.h"
+#include "../Iprotocol/CmdCheck.h"
 bool Echorole::Init()
 {
-	return false;
+	return true;
 }
 
 UserData* Echorole::ProcMsg(UserData& _poUserData)
 {
 	GET_REF2DATA(CmdMsg, input, _poUserData);
-	auto szData = input.szUserData;
-	// ZinxKernel::Zinx_SendOut(_poUserData, );
+	CmdMsg* pout = new CmdMsg(input);
+	ZinxKernel::Zinx_SendOut(*pout, *(CmdCheck::GetInstance()));
 	return nullptr;
 }
 

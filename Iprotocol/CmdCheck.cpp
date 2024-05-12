@@ -1,8 +1,13 @@
 #include "CmdCheck.h"
-#include "CmdMsg.h" 
+#include "../UserData/CmdMsg.h" 
 
 CmdCheck* CmdCheck::poSingle = new CmdCheck();
-int CmdCheck::kell = 1145;
+CmdCheck::CmdCheck()
+{
+}
+CmdCheck::~CmdCheck()
+{
+}
 UserData* CmdCheck::raw2request(std::string _szInput)
 {
     auto pret = new CmdMsg();
@@ -13,17 +18,18 @@ UserData* CmdCheck::raw2request(std::string _szInput)
 std::string* CmdCheck::response2raw(UserData& _oUserData)
 {
     GET_REF2DATA(CmdMsg,output, _oUserData);
-    return new std::string();
+    return new std::string(output.szUserData);
 }
 
 Irole* CmdCheck::GetMsgProcessor(UserDataMsg& _oUserDataMsg)
 {
     // 根据命令不同，交给不同的处理role
-    return nullptr;
+    auto RoleList = ZinxKernel::Zinx_GetAllRole();
+
+    return RoleList.front();;
 }
 
 Ichannel* CmdCheck::GetMsgSender(BytesMsg& _oBytes)
 {
-    
-    return ZinxKernel::Zinx_GetChannel_ByInfo("sdout");
+    return ZinxKernel::Zinx_GetChannel_ByInfo("StdOut");
 }

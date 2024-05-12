@@ -1,14 +1,12 @@
-#include"zinxserver.h"
-Echo* poEcho = new Echo();
-ExiFramework* iexit = new ExiFramework();
-TestStdOut* poOut = new TestStdOut();
-TestStdin* poStdin = new TestStdin();
+#include"zinx.h"
+#include "./IChannel/StdInOutChannel.h"
+#include "./IRole/Echo.h"
 int main()
 {
 	ZinxKernel::ZinxKernelInit();
-	TestStdin* poStdin = new TestStdin();
-	ZinxKernel::Zinx_Add_Channel(*poStdin);
-	ZinxKernel::Zinx_Add_Channel(*poOut);
+	ZinxKernel::Zinx_Add_Channel(*(new StdInChannel()));
+	ZinxKernel::Zinx_Add_Channel(*(new StdOutChannel()));
+	ZinxKernel::Zinx_Add_Role(*(new Echorole()));
 	ZinxKernel::Zinx_Run();
 	ZinxKernel::ZinxKernelFini();
 	return 0;

@@ -75,20 +75,24 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="CmdCheck.cpp" />
-    <ClCompile Include="CmdMsg.cpp" />
-    <ClCompile Include="Echo.cpp" />
+    <ClCompile Include="IChannel\StdInOutChannel.cpp" />
+    <ClCompile Include="Iprotocol\CmdCheck.cpp" />
+    <ClCompile Include="IRole\Echo.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="StdInOutChannel.cpp" />
+    <ClCompile Include="UserData\CmdMsg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CmdCheck.h" />
-    <ClInclude Include="CmdMsg.h" />
-    <ClInclude Include="Echo.h" />
-    <ClInclude Include="StdInOutChannel.h" />
-    <ClInclude Include="zinxserver.h" />
+    <ClInclude Include="IChannel\StdInOutChannel.h" />
+    <ClInclude Include="Iprotocol\CmdCheck.h" />
+    <ClInclude Include="IRole\Echo.h" />
+    <ClInclude Include="UserData\CmdMsg.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalLibraryDirectories>/home/1234/zinx;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <LibraryDependencies>zinx</LibraryDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

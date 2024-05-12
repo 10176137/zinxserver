@@ -1,5 +1,5 @@
 #include "StdInOutChannel.h"
-
+#include "../Iprotocol/CmdCheck.h"
 bool StdInChannel::Init()
 {
 	return true;
@@ -27,12 +27,12 @@ int StdInChannel::GetFd()
 
 std::string StdInChannel::GetChannelInfo()
 {
-	return "stdIn";
+	return "StdIn";
 }
 
 AZinxHandler* StdInChannel::GetInputNextStage(BytesMsg& _oInput)
 {
-	return nullptr;
+	return CmdCheck::GetInstance();
 }
 
 bool StdOutChannel::Init()

@@ -5,6 +5,8 @@ class Echorole :
 {
     // Í¨¹ý Irole ¼Ì³Ð
     bool Init() override;
+
+    // ÖØÐ´
     UserData* ProcMsg(UserData& _poUserData) override;
     void Fini() override;
 };
