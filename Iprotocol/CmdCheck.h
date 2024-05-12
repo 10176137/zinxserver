@@ -6,9 +6,11 @@ class CmdCheck :
 {
     // 通过 Iprotocol 继承
     static CmdCheck* poSingle;
+    
     CmdCheck();
     virtual ~CmdCheck();
 public:
+    // 生成CmdMsg
     UserData* raw2request(std::string _szInput) override;
     std::string* response2raw(UserData& _oUserData) override;
     Irole* GetMsgProcessor(UserDataMsg& _oUserDataMsg) override;
@@ -17,5 +19,6 @@ public:
     {
         return poSingle;
     }
+    
 };
 

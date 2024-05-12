@@ -77,14 +77,14 @@
   <ItemGroup>
     <ClCompile Include="IChannel\StdInOutChannel.cpp" />
     <ClCompile Include="Iprotocol\CmdCheck.cpp" />
-    <ClCompile Include="IRole\Echo.cpp" />
+    <ClCompile Include="IRole\Role.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="UserData\CmdMsg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IChannel\StdInOutChannel.h" />
     <ClInclude Include="Iprotocol\CmdCheck.h" />
-    <ClInclude Include="IRole\Echo.h" />
+    <ClInclude Include="IRole\Role.h" />
     <ClInclude Include="UserData\CmdMsg.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
