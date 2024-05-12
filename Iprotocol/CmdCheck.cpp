@@ -8,6 +8,7 @@ CmdCheck::CmdCheck()
 CmdCheck::~CmdCheck()
 {
 }
+
 UserData* CmdCheck::raw2request(std::string _szInput)
 {
     if (_szInput == "exit")
@@ -20,14 +21,23 @@ UserData* CmdCheck::raw2request(std::string _szInput)
     pret->szUserData = _szInput;
     if ("open"==_szInput)
     {
-        pret->isCmd = true;
+        pret->_cmdType = 2;
         pret->isOpen = true;
-
     }
     else if ("close" == _szInput)
     {
-        pret->isCmd = true;
+        pret->_cmdType = 2;
         pret->isOpen = false;
+    }
+    else if ("data" == _szInput)
+    {
+        pret->_cmdType = 1;
+        pret->needDataPre = true;
+    }
+    else if ("cleardata" == _szInput)
+    {
+        pret->_cmdType = 1;
+        pret->needDataPre = false;
     }
 
     return pret;
@@ -35,11 +45,11 @@ UserData* CmdCheck::raw2request(std::string _szInput)
 
 std::string* CmdCheck::response2raw(UserData& _oUserData)
 {
-    GET_REF2DATA(CmdMsg,output, _oUserData);
+    GET_REF2DATA(CmdMsg, output, _oUserData);
     return new std::string(output.szUserData);
 }
 
-Irole* CmdCheck::GetMsgProcessor(UserDataMsg& _oUserDataMsg)
+Irole* CmdCheck::GetMsgProcessor(UserDataMsg& _oUserDataMsg)  // _oUserDataMsg中有个基类UserData（CmdMsg的父类）
 {
     // 根据命令不同，交给不同的处理role
     auto RoleList = ZinxKernel::Zinx_GetAllRole();
@@ -47,23 +57,29 @@ Irole* CmdCheck::GetMsgProcessor(UserDataMsg& _oUserDataMsg)
     // 遍历容器 
     for (Irole* prople : RoleList)
     {
-        if (pCmdMsg->isCmd)
+        switch (pCmdMsg->_cmdType)
         {
-            OutputCtrl* OutCtrl = dynamic_cast<OutputCtrl*>(prople);
-            if (OutCtrl != NULL)
-            {
-                return OutCtrl;
-            }
-        }
-        else
+        case 0:
+
+        case 1:
         {
-            EchoRole* Echo = dynamic_cast<EchoRole*>(prople);
-            if (Echo != NULL)
+            auto nextrole = dynamic_cast<AddDataPre*>(prople);
+            if (nextrole != NULL)
             {
-                return Echo;
+                return nextrole;
             }
+            continue;
         }
-		
+        case 2:
+        {
+            auto nextrole = dynamic_cast<OutputCtrl*>(prople);
+            if (nextrole != NULL)
+            {
+                return nextrole;
+            }
+            continue;
+        }
+        }
     }
     return NULL;
 }

@@ -8,6 +8,7 @@ bool EchoRole::Init()
 
 UserData* EchoRole::ProcMsg(UserData& _poUserData)
 {
+
 	GET_REF2DATA(CmdMsg, input, _poUserData);
 	CmdMsg* pout = new CmdMsg(input);
 	ZinxKernel::Zinx_SendOut(*pout, *(CmdCheck::GetInstance()));
@@ -44,5 +45,48 @@ UserData* OutputCtrl::ProcMsg(UserData& _poUserData)
 }
 
 void OutputCtrl::Fini()
+{
+}
+
+bool AddDataPre::Init()
+{
+	auto RoleList = ZinxKernel::Zinx_GetAllRole();
+	for (Irole *echo : RoleList)
+	{
+		auto nextrole = dynamic_cast<EchoRole*>(echo);
+		if (nextrole != NULL)
+		{
+			this->SetNextProcessor(*nextrole);
+		}
+	}
+	
+	return true;
+}
+
+UserData* AddDataPre::ProcMsg(UserData& _poUserData)
+{
+	CmdMsg* pret = NULL;
+	GET_REF2DATA(CmdMsg, input, _poUserData);
+	if (input._cmdType == 1)
+	{
+		this->needAddData = input.needDataPre;
+	}
+
+	if (needAddData)
+	{
+		time_t tmp;
+		time(&tmp);
+		std::string szNew = std::string(ctime(&tmp)) + input.szUserData;
+		pret = new CmdMsg();
+		pret->szUserData = szNew;
+		return pret;
+	}
+
+	pret = new CmdMsg();
+	pret->szUserData = input.szUserData;
+	return pret;
+}
+
+void AddDataPre::Fini()
 {
 }
