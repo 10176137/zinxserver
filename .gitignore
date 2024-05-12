@@ -1,5 +1,4 @@
-./.vs/
-./*.vcxproj
-./*.vcxproj.user
-./obj/
-./bin/
+.vs/
+*.vcxproj.user
+obj/
+bin/
