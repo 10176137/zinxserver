@@ -69,3 +69,13 @@ AZinxHandler* StdOutChannel::GetInputNextStage(BytesMsg& _oInput)
 {
 	return nullptr;
 }
+
+AZinxHandler* TcpChannel::GetInputNextStage(BytesMsg& _oInput)
+{
+	return CmdCheck::GetInstance();
+}
+
+ZinxTcpData* TcpFact::CreateTcpDataChannel(int _fd)
+{
+	return new TcpChannel(_fd);
+}

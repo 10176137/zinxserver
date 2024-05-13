@@ -1,5 +1,6 @@
 #pragma once
 #include <zinx.h>
+#include <ZinxTCP.h>
 class StdInChannel :
     public Ichannel
 {
@@ -24,4 +25,19 @@ class StdOutChannel :
     int GetFd() override;
     std::string GetChannelInfo() override;
     AZinxHandler* GetInputNextStage(BytesMsg& _oInput) override;
+};
+
+class TcpChannel :
+    public ZinxTcpData
+{
+    // 通过 ZinxTcpData 继承
+    AZinxHandler* GetInputNextStage(BytesMsg& _oInput) override;
+public:
+    TcpChannel(int _fd) :ZinxTcpData(_fd){}
+};
+
+class TcpFact :public IZinxTcpConnFact
+{
+    // 通过 IZinxTcpConnFact 继承
+    ZinxTcpData* CreateTcpDataChannel(int _fd) override;
 };
