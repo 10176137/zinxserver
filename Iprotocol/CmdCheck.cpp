@@ -11,6 +11,7 @@ CmdCheck::~CmdCheck()
 
 UserData* CmdCheck::raw2request(std::string _szInput)
 {
+ 
     if (_szInput == "exit")
     {
         ZinxKernel::Zinx_Exit();
@@ -51,6 +52,10 @@ std::string* CmdCheck::response2raw(UserData& _oUserData)
 
 Irole* CmdCheck::GetMsgProcessor(UserDataMsg& _oUserDataMsg)  // _oUserDataMsg中有个基类UserData（CmdMsg的父类）
 {
+    if (_oUserDataMsg.szInfo == "StdIn")
+    {
+        this->szOutChannel = "StdOut";
+    }
     // 根据命令不同，交给不同的处理role
     auto RoleList = ZinxKernel::Zinx_GetAllRole();
     auto pCmdMsg = dynamic_cast<CmdMsg*>(_oUserDataMsg.poUserData);
@@ -86,5 +91,5 @@ Irole* CmdCheck::GetMsgProcessor(UserDataMsg& _oUserDataMsg)  // _oUserDataMsg中
 
 Ichannel* CmdCheck::GetMsgSender(BytesMsg& _oBytes)
 {
-    return ZinxKernel::Zinx_GetChannel_ByInfo("StdOut");
+    return ZinxKernel::Zinx_GetChannel_ByInfo(this->szOutChannel);
 }

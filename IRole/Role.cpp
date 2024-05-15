@@ -8,7 +8,6 @@ bool EchoRole::Init()
 
 UserData* EchoRole::ProcMsg(UserData& _poUserData)
 {
-
 	GET_REF2DATA(CmdMsg, input, _poUserData);
 	CmdMsg* pout = new CmdMsg(input);
 	ZinxKernel::Zinx_SendOut(*pout, *(CmdCheck::GetInstance()));

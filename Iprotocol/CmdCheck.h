@@ -24,5 +24,6 @@ public:
         return poSingle;
     }
     
+    std::string szOutChannel;
 };
 
