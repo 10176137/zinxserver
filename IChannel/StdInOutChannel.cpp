@@ -1,6 +1,9 @@
 #include "StdInOutChannel.h"
 #include "../Iprotocol/CmdCheck.h"
 #include <sys/timerfd.h>
+
+#define TimerListMax 10
+
 bool StdInChannel::Init()
 {
 	return true;
@@ -87,7 +90,7 @@ bool ZinxTimerChannel::Init()
 	int ifd = timerfd_create(CLOCK_MONOTONIC, 0);
 	if (ifd >= 0)
 	{
-		struct itimerspec period = { {5,0},{10,0} };
+		struct itimerspec period = { {1,0},{1,0} };
 		if (0 == timerfd_settime(ifd, 0, &period, NULL))
 		{
 			bRet = true;
@@ -137,17 +140,46 @@ AZinxHandler* ZinxTimerChannel::GetInputNextStage(BytesMsg& _oInput)
 	return &TimerOutMng::GetInstance();
 }
 TimerOutMng TimerOutMng::single;
+
+// 默认有10个
+TimerOutMng::TimerOutMng()
+{
+	for (int i =0;i<10;i++)
+	{
+		std::list<TimerOutProc*> *tasklist = new std::list<TimerOutProc*>();
+		m_task_arry.push_back(tasklist);
+	}
+}
+
 IZinxMsg* TimerOutMng::InternelHandle(IZinxMsg& _oInput)
 {
-
-	for (auto task : m_task_list)
+	for (std::list<TimerOutProc*>::iterator i = m_task_arry[sec]->begin(); i != m_task_arry[sec]->end();)
 	{
-		task->iCount--;
-		if (task->iCount <= 0)
+		(*i)->iperiod--;
+		if ((*i)->iperiod <= 0)
 		{
-			task->Proc();
-			task->iCount = task->GetTimerSec();
+			(*i)->Proc();
+			(*i)->iperiod = (*i)->GetTimerPeriod();
+			// 执行完之后要再次插入任务到下一次的队列中
+			(*i)->sec += (*i)->GetTimerSec();
+			this->AddTask((*i));
+			// 从一个列表中删除
+			auto ifend = i;
+			if (++i == m_task_arry[sec]->end())
+			{
+				(*m_task_arry[sec]).erase(ifend);
+				break;
+			}
+			else
+			{
+				(*m_task_arry[sec]).erase(i++);
+			}
 		}
+	}
+
+	if (++sec >= 10)
+	{
+		sec = 0;
 	}
 
 	return nullptr;
@@ -160,11 +192,16 @@ AZinxHandler* TimerOutMng::GetNextHandler(IZinxMsg& _oNextMsg)
 
 void TimerOutMng::AddTask(TimerOutProc* _task)
 {
-	m_task_list.push_back(_task);
-	_task->iCount = _task->GetTimerSec();
+	_task->iperiod = _task->GetTimerPeriod();
+	m_task_arry[_task->sec % TimerListMax]->push_back(_task);
 }
 
 void TimerOutMng::DelTask(TimerOutProc* _task)
 {
 	
+}
+
+int TimerOutProc::GetTimerPeriod()
+{
+	return GetTimerSec() / TimerListMax;
 }

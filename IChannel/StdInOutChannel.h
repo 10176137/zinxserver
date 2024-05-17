@@ -1,6 +1,7 @@
 #pragma once
 #include <zinx.h>
 #include <ZinxTCP.h>
+#include <vector>
 class StdInChannel :
     public Ichannel
 {
@@ -58,17 +59,20 @@ class ZinxTimerChannel :public Ichannel
 class TimerOutProc 
 {
 public:
-    int iCount = -1;
+    int iperiod = 0;
+    int sec = 0;
     virtual void Proc() = 0;
     virtual int GetTimerSec() = 0;
+    int GetTimerPeriod();
 };
 
 class TimerOutMng : public AZinxHandler
 {
-    std::list<TimerOutProc*>m_task_list;
+    std::vector<std::list<TimerOutProc*>*>m_task_arry;
     static TimerOutMng single;
+    int sec = 0;
 public:
-
+    TimerOutMng();
 
     // Í¨¹ý AZinxHandler ¼Ì³Ð
     IZinxMsg* InternelHandle(IZinxMsg& _oInput) override;

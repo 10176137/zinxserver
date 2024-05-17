@@ -4,6 +4,11 @@
 
 class timerhello :public TimerOutProc
 {
+public:
+	timerhello()
+	{
+		sec = this->GetTimerSec();
+	}
 	// Í¨¹ý TimerOutProc ¼Ì³Ð
 	void Proc() override
 	{
@@ -13,7 +18,7 @@ class timerhello :public TimerOutProc
 	}
 	int GetTimerSec() override
 	{
-		return 3;
+		return 5;
 	}
 };
 int main()
